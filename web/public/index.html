@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <!-- <link rel="stylesheet" type="text/css" href="./public/styles.css" /> -->
+  <link rel="stylesheet" type="text/css" href="/public/styles.css" />
 </head>
 <body>
   <script src ="https://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -13,6 +13,7 @@
       data: inputValue,
       success: (data) => {
         console.log('AJAX success!', data);
+        $('html').html(data);
       },
       error: (err) => console.error('error: ', err)
     });
