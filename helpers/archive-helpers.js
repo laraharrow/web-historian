@@ -11,8 +11,8 @@ var _ = require('underscore');
 
 exports.paths = {
   siteAssets: path.join(__dirname, '../web/public'),
-  archivedSites: path.join(__dirname, '../web/archives/sites'),
-  list: path.join(__dirname, '../web/archives/sites.txt')
+  archivedSites: path.join(__dirname, '../archives/sites'),
+  list: path.join(__dirname, '../archives/sites.txt')
 };
 
 // Used for stubbing paths for tests, do not modify
@@ -28,47 +28,49 @@ exports.initialize = function(pathsObj) {
 exports.readListOfUrls = function(callback) {
   fs.readFile(exports.paths.list, function read(err, data) {
     if (err) {
-      console.log('readlist error', err);
     } else {
-      data = JSON.stringify(data);
-      data = JSON.parse(data);
-      console.log('readlist data', data);
-      callback(data);
+      data = data.toString();
+      dataArr = data.split('\n');
+
+      //console.log('this is data', dataArr);
+      callback(dataArr);
     }
   });
 };
 
 exports.isUrlInList = function(url, callback) {
   exports.readListOfUrls(function(data) {
-    //data = JSON.parse(data);
-    console.log('this is data inside urlList', url, typeof data);
-    if (data.hasOwnProperty(url)) {
-      //check if in archive
-      console.log('url matches data', data);
-    } else {
-      exports.addUrlToList(url);
-      console.log('inside url in list', data);
-      callback('./public/loading.html');
+    for (var i in data) {
+      if (data[i] === url) {
+        callback(true);
+        return;
+      }
     }
+    callback(false);
   });
 };
 
 exports.addUrlToList = function(url, callback) {
-  exports.readListOfUrls(function(data) {
-    data[url] = false;
-    console.log('addUrlToList outisde write', data);
-    // data = JSON.stringify(data);
-    fs.writeFile(exports.paths.list, data, function(err) {
-      if (err) {
-        console.log('writeFile error', err);
-      } else {
-        console.log('writeFile success!', data);
-      }
-    });
+  var urlStr = '\n' + url;
+  fs.appendFile(exports.paths.list, urlStr, function(err) {
+    if (err) {
+      console.log('couldnt write file');
+    } else {
+      console.log(urlStr);
+      callback();
+    }
   });
 };
 
 exports.isUrlArchived = function(url, callback) {
+  fs.stat(exports.paths.archivedSites + '/' + url, function(err, stats) {
+    if (err) {
+      callback(false);
+    } else {
+      callback(true);
+    }
+  });
+
 };
 
 exports.downloadUrls = function(urls) {
