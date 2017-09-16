@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var https = require('https');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -74,4 +75,32 @@ exports.isUrlArchived = function(url, callback) {
 };
 
 exports.downloadUrls = function(urls) {
+
+  for (var i = 0; i < urls.length; i++) {
+    https.get('https://' + urls[i], res => {
+      res.on('data', (data) => {
+        fs.writeFile(exports.paths.archivedSites + '/' + res.socket._host, data, err => {
+          if (err) {
+            console.error(err);
+          }  
+        });
+      });
+
+    }).on('error', (e) => {
+      console.error(e);
+    });
+  }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
