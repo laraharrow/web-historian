@@ -1,12 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" type="text/css" href="styles.css" />
+  <!-- <link rel="stylesheet" type="text/css" href="./public/styles.css" /> -->
 </head>
 <body>
+  <script src ="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script>
+  var handleSubmit = function(inputValue) {
+    $.ajax({
+      type: 'GET',
+      url: 'http://127.0.0.1:8080/',
+      data: inputValue,
+      success: (data) => {
+        console.log('AJAX success!', data);
+      },
+      error: (err) => console.error('error: ', err)
+    });
+  };
+
+ </script>
   Enter a URL here:
+  <br/>
+  <br/>
+  please format like the following: www.google.com
+  <br/>
+  <br/>
   <form method="POST">
-    <input type="input" name="url"></input>
+    <input type="input" name="url"/>
+    <input type="button" value="submit" onclick="handleSubmit(this.form.url.value)" />
   </form>
 </body>
 </html>
